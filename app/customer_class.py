@@ -22,7 +22,7 @@ class Customer:
 
     def calculate_distance(self, shop_location: list) -> float:
         distance = math.dist(self.location, shop_location)
-        return round(distance, 2)
+        return distance
 
     def calculate_total_trip_cost(
             self,
@@ -56,17 +56,21 @@ class Customer:
 
             print(f"Date: {now}")
             print(f"Thanks, {self.name}, for your purchase!")
+            print("You have bought:")
+            total_cost = 0
             for product, quantity in self.product_cart.items():
                 if product in shop.products:
-                    print(f"You have bought: {quantity} {product}"
-                          f" for {round(quantity * shop.products[product], 2)}"
-                          f" dollars")
-            print(f"Total cost is {round(products_cost, 2)} dollars")
+                    product_name = product if quantity == 1 else f"{product}s"
+                    price = round(quantity * shop.products[product], 2)
+                    formatted_price = str(price).rstrip('0').rstrip('.')
+                    print(f"{quantity} {product_name} for {formatted_price} dollars")
+                    total_cost += price
+            formatted_total_cost = str(total_cost).rstrip('0').rstrip('.')
+            print(f"Total cost is {formatted_total_cost} dollars")
             print("See you again!")
 
-            self.money += (self.money - total_cost)
             print(f"{self.name} rides home")
-            print(f"{self.name} now has {self.money: .2f} dollars")
+            print(f"{self.name} now has{self.money: .2f} dollars")
         else:
             print(f"{self.name} doesn't have enough money"
                   f" to make a purchase in {shop.name}")

@@ -47,7 +47,7 @@ def shop_trip() -> None:
             trip_cost, products_cost, fuel_cost =\
                 customer.calculate_total_trip_cost(shop, fuel_price)
             print(f"{customer.name}'s trip to "
-                  f"the {shop.name} costs {trip_cost: .2f}")
+                  f"the {shop.name} costs{trip_cost: .2f}")
 
         min_trip_cost = float("inf")
         chosen_shop = None
