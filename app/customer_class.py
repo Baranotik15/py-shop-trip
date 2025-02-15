@@ -62,15 +62,18 @@ class Customer:
                 if product in shop.products:
                     product_name = product if quantity == 1 else f"{product}s"
                     price = round(quantity * shop.products[product], 2)
-                    formatted_price = str(price).rstrip('0').rstrip('.')
-                    print(f"{quantity} {product_name} for {formatted_price} dollars")
+                    formatted_price = str(price).rstrip("0").rstrip(".")
+                    print(f"{quantity} {product_name} "
+                          f"for {formatted_price} dollars")
                     total_cost += price
-            formatted_total_cost = str(total_cost).rstrip('0').rstrip('.')
+            formatted_total_cost = str(total_cost).rstrip("0").rstrip(".")
             print(f"Total cost is {formatted_total_cost} dollars")
             print("See you again!")
+            print()
 
             print(f"{self.name} rides home")
             print(f"{self.name} now has{self.money: .2f} dollars")
+            print()
         else:
             print(f"{self.name} doesn't have enough money"
                   f" to make a purchase in {shop.name}")

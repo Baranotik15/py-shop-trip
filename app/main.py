@@ -57,7 +57,10 @@ def shop_trip() -> None:
             if trip_cost < min_trip_cost:
                 min_trip_cost = trip_cost
                 chosen_shop = shop
-        print(f"{customer.name} rides to {chosen_shop.name}")
-
-        if chosen_shop:
+        if min_trip_cost > customer.money:
+            print(f"{customer.name} doesn't have enough"
+                  f" money to make a purchase in any shop")
+        else:
+            print(f"{customer.name} rides to {chosen_shop.name}")
+            print()
             customer.make_purchase(chosen_shop, fuel_price)
