@@ -1,25 +1,24 @@
 import json
+import os
 
-from car import Car
-from shop import Shop
-from customer_class import Customer
+from app.car import Car
+from app.shop import Shop
+from app.customer_class import Customer
 
 
-def shop_trip():
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, "config.json")
+
+
+def shop_trip() -> None:
+    with open(config_path, "r") as f:
+        data = json.load(f)
+
+    fuel_price = data["FUEL_PRICE"]
+
     customers = []
-    shop_list = []
 
-    try:
-        with open("config.json", "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        print("The config.json file was not found")
-        return
-    except json.JSONDecodeError:
-        print("The config.json file is not in the correct format")
-        return
-
-    for people in data['customers']:
+    for people in data["customers"]:
         car = Car(
             brand=people["car"]["brand"],
             fuel_consumption=people["car"]["fuel_consumption"]
@@ -33,19 +32,32 @@ def shop_trip():
         )
         customers.append(customer)
 
-    for shop in data["shops"]:
-        shop_data = Shop(
-            name= shop["name"],
-            location=shop["location"],
-            products=shop["products"],
-        )
-        shop_list.append(shop_data)
+    shop_list = [
+        Shop(
+            shop["name"],
+            shop["location"],
+            shop["products"]
+        ) for shop in data["shops"]
+    ]
 
     for customer in customers:
-        print(f"{customer.name} has {customer.money} dollars")
+        print(f"{customer.name} has {round(customer.money, 2)} dollars")
+
         for shop in shop_list:
-            fuel_cost = round(customer.calculate_fuel(shop.location) * data["FUEL_PRICE"], 2)
-            print(f"{customer.name}`s trip to the {shop.name} costs {fuel_cost}")
+            trip_cost, products_cost, fuel_cost =\
+                customer.calculate_total_trip_cost(shop, fuel_price)
+            print(f"{customer.name}'s trip to "
+                  f"the {shop.name} costs {trip_cost: .2f}")
 
+        min_trip_cost = float("inf")
+        chosen_shop = None
+        for shop in shop_list:
+            trip_cost, products_cost, fuel_cost =\
+                customer.calculate_total_trip_cost(shop, fuel_price)
+            if trip_cost < min_trip_cost:
+                min_trip_cost = trip_cost
+                chosen_shop = shop
+        print(f"{customer.name} rides to {chosen_shop.name}")
 
-shop_trip()
+        if chosen_shop:
+            customer.make_purchase(chosen_shop, fuel_price)
